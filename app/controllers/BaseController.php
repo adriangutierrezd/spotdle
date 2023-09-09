@@ -2,7 +2,16 @@
 
 namespace App\Controllers;
 
+use Dotenv;
+
 class BaseController{
+
+
+    protected $dotenv;
+    public function __construct(){
+        $this->dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
+        $this->dotenv->load();
+    }
 
     public function view($name){
 
