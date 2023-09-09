@@ -5,7 +5,13 @@ namespace App\Controllers;
 class HomeController extends BaseController{
     
     public function index(){
-        $this->view('home');
+
+        if(isset($_SESSION['loggedUser'])){
+            $this->view('home');
+        }else{
+            $this->view('welcome');
+        }
+
     }
 
     

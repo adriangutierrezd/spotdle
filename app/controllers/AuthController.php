@@ -1,6 +1,9 @@
 <?php 
 
 namespace App\Controllers;
+use App\Controllers\UserController;
+use App\Models\Token;
+
 
 class AuthController extends BaseController{
 
@@ -44,9 +47,15 @@ class AuthController extends BaseController{
         $response = curl_exec($ch);
         
         if ($response === false) {
+            // TODO -> Redirect to error page
             echo 'Error: ' . curl_error($ch);
         } else {
-            echo $response;
+            $responseData = json_decode($response, true);
+            $user = new UserController();
+            $userData = $user->logUser($responseData);
+            $newTokenId = $this->storeToken($responseData['access_token'], $userData['id']);
+            $this->saveSession($responseData['access_token'], $userData);
+            header('Location: /public/');
         }
         
         curl_close($ch);
@@ -63,12 +72,20 @@ class AuthController extends BaseController{
         return $text;
     }
 
-    private function storeToken(){
-
+    private function storeToken($token, $userId){
+        $tokenModel = new Token($token, $userId);
+        $newToken = $tokenModel->save();
+        return $newToken;
     }
 
-    public function getToken(){
+    private function saveSession($token, $userData){
+        $data = [
+            'token' => $token,
+            'user' => $userData,
+            'expiration' => time() + 3600
+        ];
         
+        $_SESSION['loggedUser'] = $data;
     }
 
 

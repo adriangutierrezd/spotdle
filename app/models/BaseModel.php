@@ -22,8 +22,8 @@ class BaseModel{
         $conexion = null;
         try{
             $conexion = new PDO("mysql:host=".$_ENV['DB_HOST'].";dbname=".$_ENV['DB_DATABASE']."", $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
-        }catch(PDOException $e){
-            throw new Exception($e->getMessage());
+        }catch(\PDOException $e){
+            throw new \PDOException($e->getMessage());
         }
         return $conexion;
     }
