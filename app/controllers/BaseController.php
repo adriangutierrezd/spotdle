@@ -47,4 +47,12 @@ class BaseController{
         die();
     }
 
+    public function error404(){
+        $this->view('error404');
+    }
+
+    public function error500(){
+        $this->view('error500');
+    }
+
 }

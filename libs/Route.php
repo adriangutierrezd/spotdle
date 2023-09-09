@@ -1,6 +1,8 @@
 <?php
 
 namespace libs;
+use App\Controllers\BaseController;
+
 class Route{    
 
     private static $routes = [];
@@ -34,8 +36,9 @@ class Route{
         }, ARRAY_FILTER_USE_KEY);
 
         if(count($matchRoutes) === 0){
-            echo "No se ha encontrado la ruta $uri";
-            return;
+            $baseController = new BaseController();
+            $baseController->error404();
+            die();
         }else{
             $callback = end($matchRoutes);
             $controller = $callback[0];

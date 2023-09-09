@@ -1,0 +1,89 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    --spotify-green: #1DB954;
+    --main-background: #080b10;
+    --main-text: white;
+}
+
+*{
+    font-family: 'Ubuntu Mono', monospace;
+    color: white;
+}
+
+body{
+    background-color: var(--main-background);
+    margin: 0;
+    padding: 5rem;
+}
+
+main{
+    border: 1px solid var(--main-text);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+h1{
+    text-align: center;
+    font-size: 3rem;
+}
+
+p{
+    font-size: 1.125rem;
+}
+
+.text-center{
+    text-align: center;
+}
+
+@media(max-width: 768px){
+    body{
+        padding: 2rem;
+    }
+    main{
+        padding: 1rem;
+    }
+}
+
+
+#cta-spotify-login{
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    border: 2px solid var(--spotify-green);
+    background-color: var(--spotify-green);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.2s ease-in-out;
+    display: block;
+    margin: 0 auto;
+    max-width: 200px;
+    margin-top: 1rem;
+}
+
+#cta-spotify-login > i{
+    color: black;
+    transition: all 0.2s ease-in-out;
+
+}
+
+#cta-spotify-login:hover{
+    background-color: transparent;
+    color: var(--main-text);
+}
+
+#cta-spotify-login:hover > i{
+    color: var(--main-text);
+}
+
+.error-image{
+    display: block;
+    margin: 0 auto;
+}
+
+@media(max-width: 576px){
+    body{
+        padding: 1rem;
+    }
+}
