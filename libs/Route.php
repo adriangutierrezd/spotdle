@@ -7,20 +7,24 @@ class Route{
 
     private static $routes = [];
 
-    public static function get($uri, $callback){
+    public static function get($uri, $callback, $middlewares = []){
         self::$routes['GET'][$uri] = $callback;
+        self::$routes['GET'][$uri]['middlewares'] = $middlewares;
     }
 
-    public static function post($uri, $callback){
+    public static function post($uri, $callback, $middlewares = []){
         self::$routes['POST'][$uri] = $callback;
+        self::$routes['POST'][$uri]['middlewares'] = $middlewares;
     }
 
-    public static function delete($uri, $callback){
+    public static function delete($uri, $callback, $middlewares = []){
         self::$routes['DELETE'][$uri] = $callback;
+        self::$routes['DELETE'][$uri]['middlewares'] = $middlewares;
     }
 
-    public static function put($uri, $callback){
+    public static function put($uri, $callback, $middlewares = []){
         self::$routes['PUT'][$uri] = $callback;
+        self::$routes['PUT'][$uri]['middlewares'] = $middlewares;
     }
 
     public static function dispatch($uri, $method){
@@ -28,10 +32,15 @@ class Route{
         $uri = self::formatUri($uri);
 
         $GLOBALS['matches'] = [];
+        $GLOBALS['matchedRawRoute'] = null;
         $matchRoutes = array_filter(self::$routes[$method], function($route) use ($uri){
+            $rawRoute = $route;
             if(strpos($route, ':')) $route = preg_replace('#:([a-zA-Z0-9-_]+)#', '([a-zA-Z0-9-_]+)', $route);
             $res = preg_match("#^$route$#", $uri, $matches);
-            if($res) $GLOBALS['matches'] = $matches;
+            if($res){
+                $GLOBALS['matches'] = $matches;
+                $GLOBALS['matchedRawRoute'] = $rawRoute;
+            } 
             return $res;
         }, ARRAY_FILTER_USE_KEY);
 
@@ -40,6 +49,13 @@ class Route{
             $baseController->error404();
             die();
         }else{
+
+            foreach(self::$routes[$method][$GLOBALS['matchedRawRoute']]['middlewares'] as $middleware){
+                $middleware = new $middleware;
+                $returnType = strpos($GLOBALS['matchedRawRoute'], '/api/') === false ? $middleware::RETURN_REDIRECT : $middleware::RETURN_JSON;
+                $middleware->handle($middleware::RETURN_JSON);
+            }
+
             $callback = end($matchRoutes);
             $controller = $callback[0];
             $method = $callback[1];

@@ -8,6 +8,7 @@ class BaseController{
 
 
     protected $dotenv;
+    
     public function __construct(){
         $this->dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
         $this->dotenv->load();
@@ -27,14 +28,12 @@ class BaseController{
 
     }
 
-
     public function getRequest(){
         header('Content-Type: application/json');
         $content = trim(file_get_contents("php://input"));
         $decoded = json_decode($content, true);
         return $decoded;
     }
-
 
     public function httpResponse($code, $message, $data){
         http_response_code($code);

@@ -82,6 +82,45 @@ p{
     margin: 0 auto;
 }
 
+select{
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    line-height: inherit;
+    margin: 1rem 0rem;
+    padding: 0.5rem;
+    background: #ccc;
+    color: black;
+    border-radius: 5px;
+}
+
+
+.loader {
+    width: 2rem;
+    height: 2rem;
+    border: 5px solid var(--spotify-green);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 
+
 @media(max-width: 576px){
     body{
         padding: 1rem;

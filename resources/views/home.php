@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/main.css"></head>
+    <script type="module" src="js/game.js"></script>
 <body>
     
 
@@ -16,7 +17,17 @@
 
     <main>
 
-        <p>Empezar a jugar</p>
+        <form id="game-start-form">
+            <select name="game_type" id="game_type" required>
+                <option value="" selected disabled>Selecciona un modo de juego:</option>
+                <option value="FIND_ARTIST">Adivina el/la artista</option>
+            </select>
+            <button type="submit">Comenzar</button>
+        </form>
+
+        <section id="game-board">
+        <span class="loader"></span>
+        </section>
     
     </main>
     
