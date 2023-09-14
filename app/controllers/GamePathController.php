@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 use App\Models\GamePath;
+use App\Models\Hint;
+use App\Models\Game;
 use PDOException;
 
 class GamePathController extends BaseController{
@@ -52,10 +54,58 @@ class GamePathController extends BaseController{
     }
 
     public function generate(){
-        // TODO
 
-        // 1. Obtenemos el top de artistas del usuario
+        $gamePath = $this->generateGamePath();
+        $keysPath = array_keys($gamePath);
 
+        try{
+            $hint = new Hint();
+            $gameHints = $hint->get('FIND_ARTIST');
+        }catch(\PDOException $e){
+            $this->httpResponse(500, 'An error ocurred', ['error' => $e->getMessage()]);
+        }
+
+
+        try{
+            $game = new Game();
+            $game->__set('user_id', $_SESSION['loggedUser']['user']['id']);
+            $game->__set('game_type', 'FIND_ARTIST');
+            $game->__set('state', 'IN COURSE');
+            $game->__set('success', 0);
+            $game->__set('attempts', 0);
+            $game->__set('solution', $gamePath['artista']);
+            $game->__set('shared', 0);
+            $game->__set('date', date('Y-m-d'));
+            $gameId = $game->create();
+        }catch(\PDOException $e){
+            $this->httpResponse(500, 'An error ocurred', ['error' => $e->getMessage()]);
+        }
+        
+        $hintCounter = 0;
+        foreach($gameHints as $gameHint){
+
+            $value = $gamePath[$keysPath[$hintCounter]];
+            if(is_array($value)) $value = implode(',', $value);
+
+            try{
+                $gamePathObj = new GamePath();
+                $gamePathObj->__set('game_id', $gameId);
+                $gamePathObj->__set('hint_id', $gameHint['id']);
+                $gamePathObj->__set('value', $value);
+                $gamePathId = $gamePathObj->create();
+                $this->httpResponse(201, 'GamePath generated', ['gameId' => $gameId]);
+            }catch(\PDOException $e){
+                $this->httpResponse(500, 'An error ocurred', ['error' => $e->getMessage()]);
+            }
+
+            $hintCounter++;
+        }
+
+
+    }
+
+
+    private function generateGamePath(){
         $topArtists = $this->getTopArtists();
         $artistToFind = $this->getRandomElementFromArray($topArtists);
         $artistTopTracks = $this->getArtistTopTracks($artistToFind['id'], $_SESSION['loggedUser']['user']['country']);
@@ -63,16 +113,18 @@ class GamePathController extends BaseController{
 
         $data = [
             'generos' => $artistToFind['genres'],
-            'seguidores' => $artistToFind['followers']['total'],
+            'popularity' => $artistToFind['popularity'],
             'album' => $artistTopTrack['album']['name'],
             'cancion' => $artistTopTrack['name'],
-            'artista similar' => '',
-            'artista' => $artistToFind['name']
         ];
 
-        echo json_encode($data);
-        die();
-
+        if(isset($artistTopTrack['preview_url'])){
+            $data['preview_url'] = $artistTopTrack['preview_url'];
+        }else{
+            $data['similar'] = '...';
+        }
+        $data['artista'] = $artistToFind['name'];
+        return $data;
     }
 
     private function getTopArtists(){
@@ -131,5 +183,3 @@ class GamePathController extends BaseController{
     }
 
 }
-
-

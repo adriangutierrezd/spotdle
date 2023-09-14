@@ -23,7 +23,7 @@ Route::get('/api/games/:gameId', [GameController::class, 'get']);
 Route::post('/api/games', [GameController::class, 'create']);
 Route::put('/api/games/:gameId', [GameController::class, 'update']);
 
-Route::get('/game-path', [GamePathController::class, 'generate']);
+Route::get('/game-path', [GamePathController::class, 'generate'], [AuthMiddleware::class]);
 
 Route::dispatch(str_replace('public/', '', $_SERVER['REQUEST_URI']), $_SERVER['REQUEST_METHOD']);
 
