@@ -16,7 +16,7 @@ class Game extends BaseModel{
 
 
     public function __construct(){
-        parent::__construct('hints');
+        parent::__construct();
     }
 
     public function get($gameId){
@@ -52,26 +52,32 @@ class Game extends BaseModel{
         }
     }
 
-    public function update($gameId){
-
-        try{
-            $sql = "UPDATE games SET state = :state, success = :success, attempts = :attempts, solution = :solution, shared = :shared WHERE id = :game_id";
+    public function update($gameId, $updateFields) {
+        try {
+            $updateSql = "UPDATE games SET ";
+            $updateData = [];
+    
+            foreach ($updateFields as $field => $value) {
+                $updateSql .= "$field = :$field, ";
+                $updateData[$field] = $value;
+            }
+    
+            // Eliminar la última coma y espacio en blanco del SQL
+            $updateSql = rtrim($updateSql, ', ');
+    
+            $updateSql .= " WHERE id = :game_id";
+            $updateData['game_id'] = $gameId;
+    
+            $sql = $updateSql;
             $query = $this->connection->prepare($sql);
-            $query->execute([
-                'game_id' => $gameId,
-                'state' => $this->state,
-                'success' => $this->success,
-                'attempts' => $this->attempts,
-                'solution' => $this->solution,
-                'shared' => $this->shared
-            ]);
+            $query->execute($updateData);
+    
             return $query->rowCount();
-        }catch(\PDOException $e){
+        } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage(), (int) $e->getCode());
         }
-
-
     }
+    
 
 
 }

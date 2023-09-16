@@ -57,18 +57,35 @@ class GameController extends BaseController{
 
         try{
             $game = new Game();
-            $game->__set('state', $request['state']);
-            $game->__set('success', $request['success']);
-            $game->__set('attempts', $request['attempts']);
-            $game->__set('solution', $request['solution']);
-            $game->__set('shared', $request['shared']);
-            $game->update($gameId);
+            $game->update($gameId, $request);
         }catch(\PDOException $e){
             $this->httpResponse(500, 'An error ocurred', ['error' => $e->getMessage()]);
         }
 
         $this->httpResponse(200, 'OK', ['game_id' => $gameId]);
 
+    }
+
+    public function checkGameAnswer($gameId){
+
+        $request = $this->getRequest();
+
+        try{
+
+            $game = new Game();
+            $game = $game->get($gameId);
+
+            if($game['solution'] == $request['answer']){
+                $this->httpResponse(200, 'Correct answer', []);
+            }else{
+                $this->httpResponse(200, 'Incorrect answer', []);
+            }
+
+
+        }catch(\PDOException $e){
+            $this->httpResponse(500, 'An error ocurred', ['error' => $e->getMessage()]);
+        }
+        
     }
 
 

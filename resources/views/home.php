@@ -22,11 +22,11 @@
                 <option value="" selected disabled>Selecciona un modo de juego:</option>
                 <option value="FIND_ARTIST">Adivina el/la artista</option>
             </select>
-            <button type="submit">Comenzar</button>
+            <button id="game-start-btn" class="main-button" type="submit">Comenzar</button>
         </form>
 
         <section id="game-board">
-        <span class="loader"></span>
+            
         </section>
     
     </main>

@@ -8,7 +8,6 @@ use PDOException;
 
 class GamePathController extends BaseController{
 
-    // https://api.spotify.com/v1/artists/00FQb4jTyendYWaN8pK0wa/top-tracks?country=ES
     const TOP_ARTISTS_URL = 'https://api.spotify.com/v1/me/top/artists';
     const ARTIST_TOP_TRACKS_URL = 'https://api.spotify.com/v1/artists/{id}/top-tracks?country={country}';
 
@@ -21,6 +20,19 @@ class GamePathController extends BaseController{
         try{
             $gamePath = new GamePath();
             $gamePath = $gamePath->get($gameId);
+        }catch(\PDOException $e){
+            $this->httpResponse($e->getCode(), 'An error ocurred', ['error' => $e->getMessage()]);
+        }
+
+        $this->httpResponse(200, 'OK', $gamePath);
+
+    }
+
+    public function getWithNumber($gameId, $hintNumber){
+
+        try{
+            $gamePath = new GamePath();
+            $gamePath = $gamePath->getWithNumber($gameId, $hintNumber);
         }catch(\PDOException $e){
             $this->httpResponse($e->getCode(), 'An error ocurred', ['error' => $e->getMessage()]);
         }
@@ -55,12 +67,14 @@ class GamePathController extends BaseController{
 
     public function generate(){
 
+        $request = $this->getRequest();
+
         $gamePath = $this->generateGamePath();
         $keysPath = array_keys($gamePath);
 
         try{
             $hint = new Hint();
-            $gameHints = $hint->get('FIND_ARTIST');
+            $gameHints = $hint->get($request['game_type']);
         }catch(\PDOException $e){
             $this->httpResponse(500, 'An error ocurred', ['error' => $e->getMessage()]);
         }
@@ -69,7 +83,7 @@ class GamePathController extends BaseController{
         try{
             $game = new Game();
             $game->__set('user_id', $_SESSION['loggedUser']['user']['id']);
-            $game->__set('game_type', 'FIND_ARTIST');
+            $game->__set('game_type', $request['game_type']);
             $game->__set('state', 'IN COURSE');
             $game->__set('success', 0);
             $game->__set('attempts', 0);
@@ -93,13 +107,15 @@ class GamePathController extends BaseController{
                 $gamePathObj->__set('hint_id', $gameHint['id']);
                 $gamePathObj->__set('value', $value);
                 $gamePathId = $gamePathObj->create();
-                $this->httpResponse(201, 'GamePath generated', ['gameId' => $gameId]);
             }catch(\PDOException $e){
                 $this->httpResponse(500, 'An error ocurred', ['error' => $e->getMessage()]);
             }
 
             $hintCounter++;
         }
+
+        $this->httpResponse(201, 'GamePath generated', ['gameId' => $gameId]);
+
 
 
     }

@@ -19,7 +19,7 @@
         <p class="text-center">En Spotdle te ofrecemos desafíos diarios sobre música basados en tus gustos perosnales.</p>
         <p class="text-center">Para jugar debes vincular tu cuenta de Spotify con nosotros. Pero no te preocupes, solo utilizamos tu información para diseñar retos adaptados a la música que escuchas.</p>
 
-        <a href="/public/login" id="cta-spotify-login">
+        <a href="/public/login" class="main-button" id="cta-spotify-login">
             <i class="bi bi-spotify"></i>
             Vincular con Spotify
         </a>

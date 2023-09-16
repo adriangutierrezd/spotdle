@@ -46,8 +46,7 @@ p{
     }
 }
 
-
-#cta-spotify-login{
+.main-button{
     text-decoration: none;
     color: black;
     font-weight: bold;
@@ -56,9 +55,12 @@ p{
     border-radius: 8px;
     padding: 1rem;
     transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+#cta-spotify-login{
     display: block;
     margin: 0 auto;
-    max-width: 200px;
     margin-top: 1rem;
 }
 
@@ -68,7 +70,7 @@ p{
 
 }
 
-#cta-spotify-login:hover{
+.main-button:hover{
     background-color: transparent;
     color: var(--main-text);
 }
@@ -93,7 +95,6 @@ select{
     font-size: inherit;
     cursor: pointer;
     line-height: inherit;
-    margin: 1rem 0rem;
     padding: 0.5rem;
     background: #ccc;
     color: black;
@@ -110,16 +111,53 @@ select{
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
-    }
+}
 
-    @keyframes rotation {
+#game-start-form{
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-gap: 1rem;
+
+}
+
+.question-submit-button{
+    color: black;
+    margin: 1rem 0rem;
+    display: block;
+    margin-left: 0 auto;
+    border: 2px solid var(--spotify-green);
+    background-color: var(--spotify-green);
+    border-radius: 0.5rem;
+    margin-right: 0 auto;
+    padding: 0.5rem;
+}
+
+.question-submit-button > i {
+    color: black;
+}
+
+.question-label{
+    display: block;
+    margin: 1rem;
+    font-weight: bold;
+}
+
+.question-input-text{
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    color: black;
+}
+
+
+@keyframes rotation {
     0% {
         transform: rotate(0deg);
     }
     100% {
         transform: rotate(360deg);
     }
-    } 
+} 
 
 @media(max-width: 576px){
     body{
