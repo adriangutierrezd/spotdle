@@ -53,7 +53,7 @@ class Route{
             foreach(self::$routes[$method][$GLOBALS['matchedRawRoute']]['middlewares'] as $middleware){
                 $middleware = new $middleware;
                 $returnType = strpos($GLOBALS['matchedRawRoute'], '/api/') === false ? $middleware::RETURN_REDIRECT : $middleware::RETURN_JSON;
-                $middleware->handle($middleware::RETURN_JSON);
+                $middleware->handle($returnType);
             }
 
             $callback = end($matchRoutes);

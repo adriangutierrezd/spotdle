@@ -25,7 +25,7 @@ export const createGame = async (gameType) => {
             body: JSON.stringify({ game_type: gameType })
         }
 
-        const response = await fetch(`${BASE_URL}game-path`, requestOptions)
+        const response = await fetch(`${BASE_URL}api/game-path`, requestOptions)
         const data = await response.json()
         return data
     } catch (err) {

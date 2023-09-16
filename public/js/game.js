@@ -123,7 +123,7 @@ const postGameAction = async (gameId, attempt, hint, answer) => {
             body: JSON.stringify(params)
         }
 
-        const response = await fetch(`${BASE_URL}game-log`, requestOptions)
+        const response = await fetch(`${BASE_URL}api/game-log`, requestOptions)
         const data = await response.json()
         return data
     } catch (err) {
@@ -152,7 +152,7 @@ const getGamePathNumber = async (gameId, hintOrder) => {
             headers: { 'Content-Type': 'application/json' }
         }
 
-        const response = await fetch(`${BASE_URL}game-path/${gameId}/${hintOrder}`, requestOptions)
+        const response = await fetch(`${BASE_URL}api/game-path/${gameId}/${hintOrder}`, requestOptions)
         const data = await response.json()
         return data
     } catch (err) {
