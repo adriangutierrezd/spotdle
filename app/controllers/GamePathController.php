@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\GamePath;
 use App\Models\Hint;
 use App\Models\Game;
+use App\Models\Artist;
 use PDOException;
 
 class GamePathController extends BaseController{
@@ -120,12 +121,13 @@ class GamePathController extends BaseController{
 
     }
 
-
     private function generateGamePath(){
         $topArtists = $this->getTopArtists();
         $artistToFind = $this->getRandomElementFromArray($topArtists);
         $artistTopTracks = $this->getArtistTopTracks($artistToFind['id'], $_SESSION['loggedUser']['user']['country']);
         $artistTopTrack = $this->getRandomElementFromArray($artistTopTracks['tracks']);
+
+        $this->saveArtist($artistToFind);
 
         $data = [
             'generos' => $artistToFind['genres'],
@@ -196,6 +198,26 @@ class GamePathController extends BaseController{
         curl_close($curl);
         return json_decode($response, true);
         
+    }
+
+    private function saveArtist($artistData){
+
+        $artistExists = new Artist();
+        $data = $artistExists->getByExternalId($artistData['id']);
+        if(is_array($data)) return;
+
+        $imagePath = $artistData['images'][0]['url'] ?? 'not found pending';
+
+        try{
+            $artist = new Artist();
+            $artist->__set('name', $artistData['name']);
+            $artist->__set('external_id', $artistData['id']);
+            $artist->__set('external_uri', $artistData['uri']);
+            $artist->__set('image', $imagePath);
+            $artist->create();
+        }catch(\PDOException $e){
+            // LOG error
+        }
     }
 
 }

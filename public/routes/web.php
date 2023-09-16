@@ -8,6 +8,7 @@ use App\Controllers\HintController;
 use App\Controllers\GameController;
 use App\Controllers\GamePathController;
 use App\Controllers\GameLogController;
+use App\Controllers\ArtistController;
 
 use App\Middleware\AuthMiddleware;
 
@@ -32,6 +33,8 @@ Route::get('/api/game-path/:gameId/:hintNumber', [GamePathController::class, 'ge
 
 
 Route::post('/api/game-log', [GameLogController::class, 'create'], [AuthMiddleware::class]);
+
+Route::get('/api/artist/:name', [ArtistController::class, 'getByName'], [AuthMiddleware::class]);
 
 
 Route::dispatch(str_replace('public/', '', $_SERVER['REQUEST_URI']), $_SERVER['REQUEST_METHOD']);
