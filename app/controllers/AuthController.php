@@ -88,5 +88,11 @@ class AuthController extends BaseController{
         $_SESSION['loggedUser'] = $data;
     }
 
+    public function logout(){
+        session_destroy();
+        header('Location: /public/');
+        exit();
+    }
+
 
 }

@@ -1,4 +1,4 @@
-import { BASE_URL } from "./constants"
+import { BASE_URL } from './constants.js'
 export const checkAnswer = async (gameId, answer) => {
     try {
 
