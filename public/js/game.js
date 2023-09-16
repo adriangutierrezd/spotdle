@@ -1,6 +1,8 @@
 import { BASE_URL, PAUSE_BUTTON, PLAY_BUTTON, ARROW_NEXT_QUESITON } from './constants.js'
 import { changeBtnState, isValidMp3Sound } from './utils.js'
 import { checkAnswer, createGame, updateGame } from './gameService.js'
+import Swal from '/node_modules/sweetalert2/src/sweetalert2.js'
+
 
 document.getElementById('game-start-form').addEventListener('submit', async (event) => {
 
@@ -88,14 +90,17 @@ const renderQuestion = (questionData, gameId) => {
 
         await postGameAction(gameId, questionData.hint_order, questionData.hint_id, answer)
         await updateGame(gameId, { attempts: questionData.hint_order })
+
+        const newHintNumber = ++questionData.hint_order
+
         const isRightAnswer = await checkAnswer(gameId, answer)
         if (isRightAnswer.message == 'Correct answer') {
-            alert('Ganas la partida')
+            await updateGame(gameId, { state: 'COMPLETED', success: 1 })
+            finishGame(gameId, true)
         } else {
-            console.log(isRightAnswer)
-            const newHintNumber = ++questionData.hint_order
             if (newHintNumber > 5) {
-                alert('Has perdido')
+                await updateGame(gameId, { status: 'COMPLETED' })
+                finishGame(gameId, false)
                 return
             }
             getNextHint(gameId, newHintNumber)
@@ -159,6 +164,32 @@ const getGamePathNumber = async (gameId, hintOrder) => {
         throw new Error(err.message)
     }
 
+}
+
+const finishGame = (gameId, success) => {
+
+    const swalOptions = {
+        title: '¡Mala suerte!',
+        text: `El/la artista que buscábamos era: `,
+        imageUrl: 'https://unsplash.it/400/200',
+        imageWidth: 400,
+        imageHeight: 200,
+        imageAlt: 'Custom image',
+    }
+
+    if (success) {
+        swalOptions.title = '¡Genial!'
+        fireSwal(swalOptions)
+    } else {
+        fireSwal(swalOptions)
+    }
+
+    // Quitamos opciones de la pantalla
+
+}
+
+const fireSwal = (options) => {
+    Swal.fire(options)
 }
 
 
